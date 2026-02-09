@@ -6,10 +6,11 @@ import {
   WireframeSection,
   WireframeList,
   Annotation,
+  DashboardHeader,
 } from '../components/wireframe-ui'
 import { formatCurrency } from '../lib/wireframe-system'
 import { nonInvestorData, investorData } from './shared-data'
-import { CreditCard, TrendingUp, Wallet, Bell, ChevronRight } from 'lucide-react'
+import { CreditCard, TrendingUp, Wallet, ChevronRight } from 'lucide-react'
 
 function AccountRow({ icon, label, balance, subtitle, highlight, annotation }) {
   return (
@@ -39,26 +40,9 @@ function AccountRow({ icon, label, balance, subtitle, highlight, annotation }) {
 function DashboardC({ data, isInvestor }) {
   return (
     <PhoneFrame>
-      {/* Header */}
-      <div className="px-5 pt-3 pb-4">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <div className="text-xs text-wire-text-muted">Olá, Rafael 👋</div>
-            <div className="text-lg font-bold">Sua conta</div>
-          </div>
-          <button className="w-8 h-8 rounded-full bg-gray-100 border border-wire-border flex items-center justify-center">
-            <Bell size={16} className="text-wire-text-muted" />
-          </button>
-        </div>
+      <DashboardHeader />
 
-        {/* Total balance */}
-        <WireframeBalance
-          label="Saldo total"
-          value={data.totalBalance}
-          size="lg"
-          className="mb-5"
-        />
-
+      <div className="px-5 pt-1 pb-4">
         {/* Bank-style account list */}
         <div className="relative mb-4">
           <WireframeSection title="Suas contas">
