@@ -1,42 +1,22 @@
-import { useEffect, useState, useCallback } from 'react'
-import { FlowProvider, useFlow } from './lib/flow-context'
+import { useState, useCallback, useEffect } from 'react'
+import { SinglePageView } from './components/system/SinglePageView'
 import { FlowNavigator } from './components/system/FlowNavigator'
-import { ScreenViewer } from './components/system/ScreenViewer'
-import { ComparisonView } from './components/system/ComparisonView'
 import { VersionPanel } from './components/system/VersionPanel'
+import { FlowProvider, useFlow } from './lib/flow-context'
 import { flows } from './flows'
-import { History } from 'lucide-react'
+import { PanelLeft, History, Eye, EyeOff } from 'lucide-react'
+import { cn } from './lib/wireframe-system'
 
 function AppContent() {
-  const { state, nextScreen, prevScreen, nextFlow, prevFlow, toggleComparison, toggleAnnotations } =
-    useFlow()
+  const { state, toggleAnnotations } = useFlow()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [versionOpen, setVersionOpen] = useState(false)
+  const [activeFlowId, setActiveFlowId] = useState(flows[0]?.id || '')
 
   const handleKeyDown = useCallback(
     (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
-
       switch (e.key) {
-        case 'ArrowRight':
-          e.preventDefault()
-          nextScreen()
-          break
-        case 'ArrowLeft':
-          e.preventDefault()
-          prevScreen()
-          break
-        case 'ArrowDown':
-          e.preventDefault()
-          nextFlow()
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          prevFlow()
-          break
-        case 'c':
-        case 'C':
-          toggleComparison()
-          break
         case 'a':
         case 'A':
           toggleAnnotations()
@@ -45,9 +25,13 @@ function AppContent() {
         case 'V':
           setVersionOpen((v) => !v)
           break
+        case 's':
+        case 'S':
+          setSidebarOpen((v) => !v)
+          break
       }
     },
-    [nextScreen, prevScreen, nextFlow, prevFlow, toggleComparison, toggleAnnotations]
+    [toggleAnnotations]
   )
 
   useEffect(() => {
@@ -57,16 +41,71 @@ function AppContent() {
 
   return (
     <div className="flex w-full h-screen overflow-hidden">
-      <FlowNavigator />
-      {state.showComparison ? <ComparisonView /> : <ScreenViewer />}
+      {/* Collapsible sidebar */}
+      {sidebarOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/20 z-30"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className="fixed left-0 top-0 z-40 h-screen">
+            <FlowNavigator />
+          </div>
+        </>
+      )}
 
-      <button
-        onClick={() => setVersionOpen(true)}
-        className="fixed bottom-4 right-4 w-10 h-10 bg-white border-2 border-wire-border rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors z-40"
-        title="Histórico de versões (V)"
-      >
-        <History size={18} className="text-wire-text-secondary" />
-      </button>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Toolbar */}
+        <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-wire-border shrink-0">
+          <button
+            onClick={() => setSidebarOpen((v) => !v)}
+            className={cn(
+              'p-2 rounded-md border transition-colors',
+              sidebarOpen
+                ? 'bg-wire-bg-dark text-white border-wire-bg-dark'
+                : 'border-wire-border hover:bg-gray-50 text-wire-text-secondary'
+            )}
+            title="Sidebar (S)"
+          >
+            <PanelLeft size={16} />
+          </button>
+
+          <button
+            onClick={toggleAnnotations}
+            className={cn(
+              'p-2 rounded-md border transition-colors flex items-center gap-1.5 text-xs font-medium',
+              state.showAnnotations
+                ? 'bg-wire-bg-dark text-white border-wire-bg-dark'
+                : 'border-wire-border hover:bg-gray-50 text-wire-text-secondary'
+            )}
+            title="Anotações (A)"
+          >
+            {state.showAnnotations ? <Eye size={14} /> : <EyeOff size={14} />}
+            Notas
+          </button>
+
+          <button
+            onClick={() => setVersionOpen(true)}
+            className="p-2 rounded-md border border-wire-border hover:bg-gray-50 text-wire-text-secondary transition-colors flex items-center gap-1.5 text-xs font-medium"
+            title="Versões (V)"
+          >
+            <History size={14} />
+            Versões
+          </button>
+
+          <div className="ml-auto text-[11px] text-wire-text-muted hidden sm:block">
+            S sidebar &middot; A notas &middot; V versões
+          </div>
+        </div>
+
+        <SinglePageView
+          flows={flows}
+          activeFlowId={activeFlowId}
+          onFlowChange={setActiveFlowId}
+          showAnnotations={state.showAnnotations}
+        />
+      </div>
 
       <VersionPanel open={versionOpen} onClose={() => setVersionOpen(false)} />
     </div>

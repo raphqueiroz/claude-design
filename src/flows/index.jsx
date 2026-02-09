@@ -10,7 +10,9 @@ export const flows = [
     options: [
       {
         id: 'option-a',
-        name: 'Opção A: Card Emphasis',
+        name: 'Opção A: Card destaque + tile investimento',
+        description:
+          'Card Visa mantém destaque (similar ao app atual). Investimentos aparecem em tile compacto abaixo com seta para área dedicada.',
         screens: [
           {
             id: 'a-non-investor',
@@ -26,7 +28,9 @@ export const flows = [
       },
       {
         id: 'option-b',
-        name: 'Opção B: Horizontal Scroll',
+        name: 'Opção B: Cards horizontal scroll (Rocket Money)',
+        description:
+          'Investimento e Card têm mesmo peso visual. Scroll horizontal permite adicionar mais contas no futuro (BRLA, savings, etc).',
         screens: [
           {
             id: 'b-non-investor',
@@ -43,6 +47,8 @@ export const flows = [
       {
         id: 'option-c',
         name: 'Opção C: Bank Style',
+        description:
+          'Estilo banco tradicional com lista de contas. Investimento aparece como conta principal quando ativo, dando prioridade visual máxima.',
         screens: [
           {
             id: 'c-non-investor',
@@ -65,6 +71,8 @@ export const flows = [
       {
         id: 'intro-option-a',
         name: 'Opção A: Investment Intro',
+        description:
+          'Fluxo de introdução ao investimento com benefícios, simulação e input de valor.',
         screens: [
           {
             id: 'intro',
@@ -82,6 +90,7 @@ export const flows = [
       {
         id: 'detail-placeholder',
         name: 'Placeholder',
+        description: 'Será implementado na próxima iteração.',
         screens: [
           {
             id: 'detail-placeholder',
