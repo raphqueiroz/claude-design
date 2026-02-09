@@ -12,6 +12,7 @@ function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [versionOpen, setVersionOpen] = useState(false)
   const [activeFlowId, setActiveFlowId] = useState(flows[0]?.id || '')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -49,7 +50,10 @@ function AppContent() {
             onClick={() => setSidebarOpen(false)}
           />
           <div className="fixed left-0 top-0 z-40 h-screen">
-            <FlowNavigator />
+            <FlowNavigator
+              collapsed={sidebarCollapsed}
+              onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+            />
           </div>
         </>
       )}

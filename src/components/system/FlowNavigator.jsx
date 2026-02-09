@@ -8,10 +8,12 @@ import {
   Eye,
   EyeOff,
   Columns2,
+  PanelLeftClose,
+  PanelLeft,
 } from 'lucide-react'
 import { useState } from 'react'
 
-export function FlowNavigator() {
+export function FlowNavigator({ collapsed = false, onToggleCollapse }) {
   const {
     flows,
     state,
@@ -37,15 +39,42 @@ export function FlowNavigator() {
   }
 
   return (
-    <aside className="w-72 bg-white border-r-2 border-wire-border flex flex-col h-screen shrink-0">
+    <aside
+      className={cn(
+        'bg-white border-r-2 border-wire-border flex flex-col h-screen shrink-0 transition-[width] duration-200 ease-in-out overflow-hidden',
+        collapsed ? 'w-14' : 'w-72'
+      )}
+    >
       {/* Header */}
-      <div className="px-4 py-4 border-b border-wire-border">
-        <div className="flex items-center gap-2">
-          <Layout size={18} className="text-wire-text-muted" />
-          <span className="text-sm font-bold tracking-tight">WIREFRAME EXPLORER</span>
+      <div
+        className={cn(
+          'py-4 border-b border-wire-border flex min-w-0',
+          collapsed ? 'flex-col items-center gap-3 px-2' : 'items-center justify-between px-4'
+        )}
+      >
+        <div className={cn('flex items-center gap-2 min-w-0', collapsed && 'justify-center')}>
+          <Layout size={18} className="text-wire-text-muted shrink-0" />
+          {!collapsed && (
+            <span className="text-sm font-bold tracking-tight truncate">WIREFRAME EXPLORER</span>
+          )}
         </div>
-        <div className="text-xs text-wire-text-muted mt-1">Picnic Design System</div>
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          className="p-1.5 rounded-md border border-wire-border hover:bg-gray-50 transition-colors shrink-0"
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? (
+            <PanelLeft size={18} className="text-wire-text-secondary" />
+          ) : (
+            <PanelLeftClose size={18} className="text-wire-text-secondary" />
+          )}
+        </button>
       </div>
+      {!collapsed && (
+        <>
+          <div className="text-xs text-wire-text-muted px-4 -mt-2 pb-2">Picnic Design System</div>
 
       {/* Controls */}
       <div className="px-4 py-3 border-b border-wire-border flex gap-2">
@@ -166,6 +195,8 @@ export function FlowNavigator() {
           <span>A Anotações</span>
         </div>
       </div>
+        </>
+      )}
     </aside>
   )
 }
